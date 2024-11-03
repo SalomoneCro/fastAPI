@@ -1,9 +1,17 @@
 from fastapi import FastAPI, Body
 from fastapi.responses import HTMLResponse
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI()
 app.title = "Primer Backend"
+
+class Movie(BaseModel):
+    id: Optional[int] = None
+    name : str
+    category: str
+    description: str
 
 movies = [
     {
@@ -40,30 +48,17 @@ def get_movies_category(category: str):
     return [i for i in movies if i["category"] == category]
 
 @app.post("/movies/add", tags=['movies'])
-def add_movie(id: int = Body(),
-              name: str = Body(),
-              category: str = Body(),
-              description: str = Body()
-):
-    movies.append({
-        "id": id,
-        "name": name,
-        "category": category,
-        "description": description,
-    })
+def add_movie(movie: Movie):
+    movies.append(movie)
     return movies
 
 @app.put("/movies/{id}", tags=['movies'])
-def modify_movie(id: int,
-                 name: str = Body(),
-                 category: str = Body(),
-                 description: str = Body()
-):
+def modify_movie(id: int, movie:Movie):
     for item in movies:
         if item['id'] == id:
-            item['name'] = name,
-            item['category'] = category,
-            item['description'] = description
+            item['name'] = movie.name,
+            item['category'] = movie.category,
+            item['description'] = movie.description
             return movies
     return "No se encontró pelicula con el id dado"
 
