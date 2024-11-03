@@ -53,5 +53,26 @@ def add_movie(id: int = Body(),
     })
     return movies
 
-app.
+@app.put("/movies/{id}", tags=['movies'])
+def modify_movie(id: int,
+                 name: str = Body(),
+                 category: str = Body(),
+                 description: str = Body()
+):
+    for item in movies:
+        if item['id'] == id:
+            item['name'] = name,
+            item['category'] = category,
+            item['description'] = description
+            return movies
+    return "No se encontró pelicula con el id dado"
+
+@app.delete("/movies/{id}", tags=['movies'])
+def delete_movie(id: int):
+    for item in movies:
+        if item['id'] == id:
+            movies.remove(item)
+            return movies
+    return "No se encontró pelicula con el id dado"
+
     
